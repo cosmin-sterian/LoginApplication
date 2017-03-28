@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Login Application</string>
+    <string name="bio">I am a student in the second year of the Automatic Control and Computer Science faculty from Politehnica University of Bucharest. I like to code since the age of 12 :D
+    Android rocks! :D</string>
+    <string name="repo_button_text">Create new REPO</string>
+    <string name="bio_header">Bio</string>
+    <string name="company_name">Company name</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button_text">Login</string>
+</resources>
