@@ -27,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
+        android:maxLines="1"
         android:hint="@string/username_hint"
         android:gravity="center"/>
 

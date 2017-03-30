@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,8 +39,8 @@ public class ProfileActivity extends AppCompatActivity {
         TextView username = (TextView) findViewById(R.id.user);
         username.setText(getIntent().getStringExtra("username"));
 
-        setDate(R.string.date1);
-        setDate(R.string.date2);
+        setDate(R.id.date1);
+        setDate(R.id.date2);
 
     }
 
@@ -56,6 +57,7 @@ public class ProfileActivity extends AppCompatActivity {
         TextView textView = (TextView) findViewById(resID);
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
         SpannableString result = new SpannableString(dateFormat.format(new Date()));
+        result.setSpan(new UnderlineSpan(), 0, result.length(), 0);
         textView.setText(result);
     }
 
