@@ -7,11 +7,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -32,6 +37,10 @@ public class ProfileActivity extends AppCompatActivity {
         //Toast.makeText(ProfileActivity.this, "Welcome, " + getIntent().getStringExtra("username"), Toast.LENGTH_SHORT).show();
         TextView username = (TextView) findViewById(R.id.user);
         username.setText(getIntent().getStringExtra("username"));
+
+        setDate(R.string.date1);
+        setDate(R.string.date2);
+
     }
 
     @Override
@@ -43,6 +52,13 @@ public class ProfileActivity extends AppCompatActivity {
         return true;
     }
 
+    public void setDate(int resID) {
+        TextView textView = (TextView) findViewById(resID);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
+        SpannableString result = new SpannableString(dateFormat.format(new Date()));
+        textView.setText(result);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -51,7 +67,7 @@ public class ProfileActivity extends AppCompatActivity {
             case R.id.logout:
                 Toast.makeText(ProfileActivity.this, "Log out succesful", Toast.LENGTH_SHORT).show();
                 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-                pref.edit().putBoolean("logged_in", false);
+                pref.edit().putBoolean("logged_in", false).apply();
                 Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();

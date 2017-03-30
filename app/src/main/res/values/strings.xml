@@ -1,11 +1,23 @@
 <resources>
     <string name="app_name">Login Application</string>
     <string name="bio">I am a student in the second year of the Automatic Control and Computer Science faculty from Politehnica University of Bucharest. I like to code since the age of 12 :D
-    Android rocks! :D</string>
+    \nAndroid rocks! :D</string>
     <string name="repo_button_text">Create new REPO</string>
     <string name="bio_header">Bio</string>
     <string name="company_name">Company name</string>
     <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
     <string name="login_button_text">Login</string>
+    <string name="profile_location">Location</string>
+    <string name="location_bucharest"><u>Bucharest</u></string>
+    <string name="email">Email</string>
+    <string name="email_address"><u>c.cristian.sterian@gmail.com</u></string>
+    <string name="date_created">Date created</string>
+    <string name="date1"><u>Date1</u></string>
+    <string name="date2"><u>Date2</u></string>
+    <string name="date_modified">Date modified</string>
+    <string name="public_repos">Public Repos</string>
+    <string name="public_repos_no"><u>1</u></string>
+    <string name="private_repos">Private Repos</string>
+    <string name="private_repos_no"><u>0</u></string>
 </resources>
