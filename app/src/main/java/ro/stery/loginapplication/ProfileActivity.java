@@ -74,6 +74,9 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.repos:
+                startActivity(new Intent(ProfileActivity.this, RepositoriesActivity.class));
+                break;
         }
 
         return true;

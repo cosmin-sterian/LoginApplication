@@ -18,7 +18,6 @@ import android.widget.Toast;
 public class LoginActivity extends AppCompatActivity {
 
     EditText password;
-    //password.setTransformationMethod(PasswordTransformationMethod.getInstance());
     EditText username;
 
     @Override
@@ -33,7 +32,6 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
             intent.putExtra("username", user);
             startActivity(intent);
-            //SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
             pref.edit().putBoolean("logged_in", true).apply();
             finish();
         }
@@ -45,7 +43,6 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(LoginActivity.this, "Logging in...", Toast.LENGTH_SHORT).show();
                 if(username.getText().toString().equals(""))
                 {
                     Toast.makeText(LoginActivity.this, "Error: Username field can't be empty", Toast.LENGTH_SHORT).show();

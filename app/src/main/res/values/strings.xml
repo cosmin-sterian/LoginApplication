@@ -20,4 +20,7 @@
     <string name="public_repos_no"><u>1</u></string>
     <string name="private_repos">Private Repos</string>
     <string name="private_repos_no"><u>0</u></string>
+    <string name="counter">counter</string>
+    <string name="repo_name_owner">%1$s (%2$s)</string>
+    <string name="public_checkbox">public</string>
 </resources>
