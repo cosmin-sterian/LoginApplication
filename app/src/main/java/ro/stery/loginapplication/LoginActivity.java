@@ -1,18 +1,16 @@
 package ro.stery.loginapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.PasswordTransformationMethod;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import okhttp3.Credentials;
@@ -32,78 +30,73 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-        if(pref.getBoolean("logged_in", false))
+        if(pref.getString(Contract.Preferences.AUTH_HASH, null) != null)
         {
-            String user = pref.getString("username", null);
-            Toast.makeText(LoginActivity.this, "Welcome, " + user, Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
-            intent.putExtra("username", user);
-            startActivity(intent);
-            pref.edit().putBoolean("logged_in", true).apply();
-            finish();
+            goToProfileScreen();
+            return;
         }
 
         password = (EditText) findViewById(R.id.password);
         username = (EditText) findViewById(R.id.username);
+        findViewById(R.id.layout).setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                closeKeyboard(v);
+                return false;
+            }
+        });
 
         Button loginButton = (Button) findViewById(R.id.login);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeKeyboard(v);
                 performLogin(username.getText().toString(), password.getText().toString());
-                /*if(username.getText().toString().equals(""))
-                {
-                    Toast.makeText(LoginActivity.this, "Error: Username field can't be empty", Toast.LENGTH_SHORT).show();
-                } else if(password.getText().toString().equals("Stery")) {*/
-                    //Toast.makeText(LoginActivity.this, "Logging in...", Toast.LENGTH_SHORT).show();
-                    /*v.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
-                            intent.putExtra("username", username.getText().toString());
-                            startActivity(intent);
-                            finish();
-                        }
-                    }, 3000);*/
-                    /*Toast.makeText(LoginActivity.this, "Welcome, " + username.getText().toString(), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
-                    intent.putExtra("username", username.getText().toString());
-                    startActivity(intent);
-                    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-                    pref.edit().putBoolean("logged_in", true).apply();
-                    pref.edit().putString("username", username.getText().toString()).apply();
-                    finish();
-                } else {
-                    Toast.makeText(LoginActivity.this, "Invalid Username or Password", Toast.LENGTH_SHORT).show();
-                }*/
             }
         });
 
     }
 
-    private void goToProfileScreen(String username) {
+    private void closeKeyboard(View view) {
+        if(view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    private void goToProfileScreen() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+        String username = preferences.getString(Contract.Preferences.USERNAME, null);
         Toast.makeText(LoginActivity.this, "Welcome, " + username, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
         intent.putExtra("username", username);
         startActivity(intent);
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-        pref.edit().putBoolean("logged_in", true).apply();
-        pref.edit().putString("username", username).apply();
         finish();
     }
 
     private void performLogin(final String username, String password) {
+        final String authHash = Credentials.basic(username, password);
+
         Call<LoginData> callable = GitHub.Service.get().checkAuth(Credentials.basic(username, password));
 
         callable.enqueue(new Callback<LoginData>() {
             @Override
             public void onResponse(Call<LoginData> call, Response<LoginData> response) {
                 if(response.isSuccessful()) {
-                    goToProfileScreen(username);
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                    preferences.edit()
+                            .putString(Contract.Preferences.AUTH_HASH, authHash)
+                            .putString(Contract.Preferences.USERNAME, username)
+                            .apply();
+                    goToProfileScreen();
                 } else {
                     switch(response.code()) {
-                        case 403:
+                        case 401:
                             Toast.makeText(LoginActivity.this, "Invalid username or password.", Toast.LENGTH_SHORT).show();
+                            break;
+                        case 403:
+                            Toast.makeText(LoginActivity.this, "Login limit reached.", Toast.LENGTH_SHORT).show();
                             break;
                         default:
                             Toast.makeText(LoginActivity.this, "An error occurred", Toast.LENGTH_SHORT).show();
