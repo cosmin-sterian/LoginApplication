@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ro.stery.loginapplication">
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -21,8 +22,10 @@
             android:name=".ProfileActivity"
             android:icon="@drawable/github_logo"
             android:label="GitHub" />
-        <activity android:name=".RepositoriesActivity"
-            android:label="GitHub - Repos"></activity>
+        <activity
+            android:name=".RepositoriesActivity"
+            android:label="GitHub - Repos" />
+        <activity android:name=".RepositoryDetailsActivity"></activity>
     </application>
 
 </manifest>

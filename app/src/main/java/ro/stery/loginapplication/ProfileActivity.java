@@ -119,7 +119,7 @@ public class ProfileActivity extends AppCompatActivity {
         switch(item.getItemId())
         {
             case R.id.logout:
-                Toast.makeText(ProfileActivity.this, "Log out succesful", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, "Log out successful", Toast.LENGTH_SHORT).show();
                 logOut();
                 return true;
             case R.id.repos:
