@@ -58,12 +58,6 @@ public class RepositoriesActivity extends AppCompatActivity {
                     intent.putExtra("url", repository.getUrl());
                     intent.putExtra("html_url", repository.getHtmlUrl());
                     startActivity(intent);
-                    /*Fragment details = RepositoryDetailsFragment.New(repository);
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.container_portrait, details)
-                            .commit();*/
-                    Toast.makeText(RepositoriesActivity.this, "TODO @home", Toast.LENGTH_SHORT).show();
                 }
             }
         });
