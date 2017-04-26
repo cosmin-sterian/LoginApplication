@@ -58,6 +58,13 @@ public class RepositoriesActivity extends AppCompatActivity {
                     intent.putExtra("url", repository.getUrl());
                     intent.putExtra("html_url", repository.getHtmlUrl());
                     startActivity(intent);
+
+                    /**
+                     * TODO: In portrait sa nu fac o activitate noua, ci sa inlocuiesc recycleview-ul(ca un fragment) cu fragmentul
+                     * TODO: ca sa fie mai "nativ"(daca ecranul e in portrait si se selecteaza o optiune, apare activatea noua, dar daca apoi
+                     * TODO: ecranul intra in landscape, trebuie sa se inchida activitatea curenta, ca sa se vada lista de repouri)
+                     */
+
                 }
             }
         });

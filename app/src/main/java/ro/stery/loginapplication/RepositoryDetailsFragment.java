@@ -21,7 +21,7 @@ public class RepositoryDetailsFragment extends Fragment {
         Bundle args = new Bundle();
 
         args.putString("description", repository.getDescription());
-        args.putBoolean("is_public", repository.getPrivate());
+        args.putBoolean("is_public", !repository.getPrivate());
         args.putString("url", repository.getUrl());
         args.putString("html_url", repository.getHtmlUrl());
 
