@@ -2,35 +2,42 @@ package ro.stery.loginapplication;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.PersistableBundle;
+import android.database.Cursor;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ro.stery.loginapplication.database.DbContract;
+import ro.stery.loginapplication.database.GithubContentProvider;
 import ro.stery.loginapplication.model.GitHub;
 import ro.stery.loginapplication.model.Repository;
 
-public class RepositoriesActivity extends AppCompatActivity {
+public class RepositoriesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private RecyclerView mRecyclerView;
     private Adapter mAdapter;
     private boolean mCanShowDetails = false;
+    private static final int LOADER_REPOSITORIES = R.string.loader_repositories;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,7 +77,46 @@ public class RepositoriesActivity extends AppCompatActivity {
         });
         mRecyclerView.setAdapter(mAdapter);
 
+        // Populate the list with whatever data with have in the local database (so we don't have
+        // an empty screen when fetching repositories from the network). Also, in case of no
+        // internet connection, we still have something to show in the UI.
+        updateUIFromDb();
+        //  Finally attempt to fetch the repositories
         fetchRepos();
+    }
+
+    private void updateUIFromDb() {
+        // Fetch all of the repositories from the local database
+        getSupportLoaderManager().initLoader(LOADER_REPOSITORIES, null, this);
+    }
+
+    private void updateFromCursor(Cursor cursor) {
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) { // Move to the first position in the cursor
+                // Extract all of the column indexes based on the column names
+                List<Repository> myRepos = new ArrayList<>();
+                int idIndex = cursor.getColumnIndex(DbContract.Repository.ID);
+                int nameIndex = cursor.getColumnIndex(DbContract.Repository.NAME);
+                int descriptionIndex = cursor.getColumnIndex(DbContract.Repository.DESCRIPTION);
+                int isPublicIndex = cursor.getColumnIndex(DbContract.Repository.IS_PUBLIC);
+
+                do {
+                    // And extract each repository
+                    Repository repository = new Repository();
+                    repository.setId(cursor.getInt(idIndex));
+                    repository.setName(cursor.getString(nameIndex));
+                    repository.setDescription(cursor.getString(descriptionIndex));
+                    repository.setPrivate(cursor.getInt(isPublicIndex) == 0);
+                    myRepos.add(repository);
+                } while (cursor.moveToNext());  // While iterating over the cursor
+
+                // Show the repositories in the UI
+                mAdapter.setmData(myRepos);
+                mAdapter.notifyDataSetChanged();
+
+            }
+        }
     }
 
     private void fetchRepos() {
@@ -100,6 +146,33 @@ public class RepositoriesActivity extends AppCompatActivity {
 
         mAdapter.setmData(repos);
         mAdapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch(id) {
+            case LOADER_REPOSITORIES:
+                return new CursorLoader(this, GithubContentProvider.REPOSITORY_URI, null, null, null, null);
+        }
+        return new CursorLoader(this);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        switch(loader.getId()) {
+            case LOADER_REPOSITORIES:
+                updateFromCursor(data);
+                break;
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+
 
     }
 
@@ -159,6 +232,28 @@ public class RepositoriesActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.repos, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch(item.getItemId())
+        {
+            case R.id.clear_repos:
+                getContentResolver().delete(GithubContentProvider.REPOSITORY_URI, null, null);
+                return true;
+        }
+
+        return false;
     }
 
 }

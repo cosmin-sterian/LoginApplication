@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ro.stery.loginapplication">
+          package="ro.stery.loginapplication">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -13,19 +13,26 @@
         android:theme="@style/AppTheme">
         <activity android:name=".LoginActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".ProfileActivity"
             android:icon="@drawable/github_logo"
-            android:label="GitHub" />
+            android:label="GitHub"/>
         <activity
             android:name=".RepositoriesActivity"
-            android:label="GitHub - Repos" />
-        <activity android:name=".RepositoryDetailsActivity"></activity>
+            android:label="GitHub - Repos"/>
+        <activity android:name=".RepositoryDetailsActivity"/>
+
+        <provider
+            android:name=".database.GithubContentProvider"
+            android:authorities="ro.stery.loginapplication.provider"
+            android:enabled="true"
+            android:exported="true">
+        </provider>
     </application>
 
 </manifest>
