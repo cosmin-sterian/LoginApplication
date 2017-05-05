@@ -4,6 +4,11 @@
     <item
         android:id="@+id/repos"
         android:title="View Repos" />
+
+    <item
+        android:id="@+id/clear_profile"
+        android:title="Clear Profile Data" />
+
     <item
         android:id="@+id/logout"
         android:title="Logout" />
